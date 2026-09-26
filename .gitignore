@@ -29,3 +29,6 @@ out/
 .DS_Store
 .vscode/
 .idea/
+
+# local tool output (not part of the project)
+Claude outputs/
