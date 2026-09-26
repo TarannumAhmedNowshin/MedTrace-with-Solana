@@ -45,7 +45,7 @@ Types and the verdict rule live in [`app/src/idl/contract.ts`](app/src/idl/contr
 ## Links
 | | |
 |---|---|
-| Program ID | *pending deploy* |
-| Explorer | *pending deploy* |
+| Program ID | `5B5PhT8S3btDAhR2y8uJR5o8NBqhi14LbghZwb5TT9i5` (devnet) |
+| Explorer | https://explorer.solana.com/address/5B5PhT8S3btDAhR2y8uJR5o8NBqhi14LbghZwb5TT9i5?cluster=devnet |
 | Vercel | *fill in* |
 | Deck | *fill in* |

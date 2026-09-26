@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 
 // Solana Playground overwrites this on `build`. After deploying, paste the real
 // Program ID here too so the repo mirror matches what is live on devnet.
-declare_id!("11111111111111111111111111111111");
+declare_id!("5B5PhT8S3btDAhR2y8uJR5o8NBqhi14LbghZwb5TT9i5");
 
 #[program]
 pub mod medtrace {

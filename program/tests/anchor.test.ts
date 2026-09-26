@@ -12,6 +12,17 @@ describe("medtrace", () => {
     pg.program.programId
   );
 
+  // Devnet RPC nodes can lag behind a confirmed write. Re-read until the expected change shows up.
+  // (Playground's test sandbox has no setTimeout — each RPC round-trip is the delay.)
+  const fetchPack = async (ready: (p: any) => boolean = () => true) => {
+    let pack: any = null;
+    for (let i = 0; i < 40; i++) {
+      pack = await pg.program.account.pack.fetchNullable(packPda, "confirmed");
+      if (pack && ready(pack)) return pack;
+    }
+    return pack; // let the assertions report what we actually saw
+  };
+
   it("mints a pack", async () => {
     const tx = await pg.program.methods
       .mintPack(serial, "BX-2026-09", new BN(1837036800)) // expiry 2028-03-31
@@ -19,7 +30,8 @@ describe("medtrace", () => {
       .rpc();
     console.log("mint tx:", `https://explorer.solana.com/tx/${tx}?cluster=devnet`);
 
-    const pack = await pg.program.account.pack.fetch(packPda);
+    const pack = await fetchPack();
+    assert.ok(pack, "Pack account not found");
     assert.equal(pack.serial, serial);
     assert.equal(pack.holder.toBase58(), pg.wallet.publicKey.toBase58());
     assert.deepEqual(pack.status, { manufactured: {} });
@@ -46,7 +58,7 @@ describe("medtrace", () => {
       .rpc();
     console.log("transfer tx:", `https://explorer.solana.com/tx/${tx}?cluster=devnet`);
 
-    const pack = await pg.program.account.pack.fetch(packPda);
+    const pack = await fetchPack((p) => p.holder.equals(distributor.publicKey));
     assert.equal(pack.holder.toBase58(), distributor.publicKey.toBase58());
   });
 
@@ -71,7 +83,7 @@ describe("medtrace", () => {
       .signers([distributor])
       .rpc();
 
-    const pack = await pg.program.account.pack.fetch(packPda);
+    const pack = await fetchPack((p) => p.holder.equals(pharmacy.publicKey));
     assert.equal(pack.holder.toBase58(), pharmacy.publicKey.toBase58());
   });
 
@@ -83,7 +95,7 @@ describe("medtrace", () => {
       .rpc();
     console.log("dispense tx:", `https://explorer.solana.com/tx/${tx}?cluster=devnet`);
 
-    const pack = await pg.program.account.pack.fetch(packPda);
+    const pack = await fetchPack((p) => "dispensed" in p.status);
     assert.deepEqual(pack.status, { dispensed: {} });
     assert.ok(pack.dispensedAt.toNumber() > 0);
     console.log("Dispensed at:", new Date(pack.dispensedAt.toNumber() * 1000));
