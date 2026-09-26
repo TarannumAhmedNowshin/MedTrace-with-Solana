@@ -1,0 +1,377 @@
+{
+  "address": "11111111111111111111111111111111",
+  "metadata": {
+    "name": "medtrace",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "PLACEHOLDER IDL generated from Tech Design §3. Replace with the Playground export."
+  },
+  "instructions": [
+    {
+      "name": "dispense",
+      "discriminator": [
+        59,
+        84,
+        7,
+        23,
+        164,
+        226,
+        137,
+        152
+      ],
+      "accounts": [
+        {
+          "name": "pack",
+          "writable": true
+        },
+        {
+          "name": "holder",
+          "signer": true,
+          "relations": [
+            "pack"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "mint_pack",
+      "discriminator": [
+        154,
+        219,
+        135,
+        185,
+        123,
+        70,
+        214,
+        0
+      ],
+      "accounts": [
+        {
+          "name": "pack",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "serial"
+              }
+            ]
+          }
+        },
+        {
+          "name": "manufacturer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "serial",
+          "type": "string"
+        },
+        {
+          "name": "batch",
+          "type": "string"
+        },
+        {
+          "name": "expiry",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "transfer_custody",
+      "discriminator": [
+        183,
+        149,
+        207,
+        218,
+        216,
+        15,
+        178,
+        48
+      ],
+      "accounts": [
+        {
+          "name": "pack",
+          "writable": true
+        },
+        {
+          "name": "holder",
+          "signer": true,
+          "relations": [
+            "pack"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "new_holder",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Pack",
+      "discriminator": [
+        244,
+        192,
+        97,
+        212,
+        134,
+        91,
+        198,
+        200
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "CustodyTransferred",
+      "discriminator": [
+        165,
+        204,
+        218,
+        131,
+        126,
+        81,
+        159,
+        23
+      ]
+    },
+    {
+      "name": "PackDispensed",
+      "discriminator": [
+        77,
+        41,
+        130,
+        185,
+        160,
+        101,
+        114,
+        11
+      ]
+    },
+    {
+      "name": "PackMinted",
+      "discriminator": [
+        170,
+        130,
+        52,
+        22,
+        27,
+        240,
+        82,
+        110
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidSerial",
+      "msg": "Serial must be 1-32 characters of A-Z, 0-9 or '-'"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidBatch",
+      "msg": "Batch must be 1-16 printable characters"
+    },
+    {
+      "code": 6002,
+      "name": "AlreadyExpired",
+      "msg": "Expiry must be in the future"
+    },
+    {
+      "code": 6003,
+      "name": "NotHolder",
+      "msg": "Signer is not the current holder"
+    },
+    {
+      "code": 6004,
+      "name": "SameHolder",
+      "msg": "New holder equals current holder"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidStatus",
+      "msg": "Transfer not allowed in current status"
+    },
+    {
+      "code": 6006,
+      "name": "NotAtPharmacy",
+      "msg": "Pack must be at a pharmacy to dispense"
+    },
+    {
+      "code": 6007,
+      "name": "AlreadyDispensed",
+      "msg": "Pack has already been dispensed"
+    }
+  ],
+  "types": [
+    {
+      "name": "CustodyTransferred",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "serial",
+            "type": "string"
+          },
+          {
+            "name": "from",
+            "type": "pubkey"
+          },
+          {
+            "name": "to",
+            "type": "pubkey"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "PackStatus"
+              }
+            }
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pack",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "manufacturer",
+            "type": "pubkey"
+          },
+          {
+            "name": "holder",
+            "type": "pubkey"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "PackStatus"
+              }
+            }
+          },
+          {
+            "name": "expiry",
+            "type": "i64"
+          },
+          {
+            "name": "dispensed_at",
+            "type": "i64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "serial",
+            "type": "string"
+          },
+          {
+            "name": "batch",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PackDispensed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "serial",
+            "type": "string"
+          },
+          {
+            "name": "pharmacy",
+            "type": "pubkey"
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PackMinted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "serial",
+            "type": "string"
+          },
+          {
+            "name": "manufacturer",
+            "type": "pubkey"
+          },
+          {
+            "name": "batch",
+            "type": "string"
+          },
+          {
+            "name": "expiry",
+            "type": "i64"
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PackStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Manufactured"
+          },
+          {
+            "name": "InTransit"
+          },
+          {
+            "name": "AtPharmacy"
+          },
+          {
+            "name": "Dispensed"
+          }
+        ]
+      }
+    }
+  ]
+}

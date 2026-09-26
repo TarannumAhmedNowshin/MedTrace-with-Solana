@@ -1,0 +1,33 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  program-rules:
+    name: Program rules + contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --manifest-path anchor/rules-tests/Cargo.toml
+      - run: cargo check --manifest-path anchor/tools/offline-check/medtrace-check/Cargo.toml
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/check-contract.mjs
+      - name: playground/lib.rs is up to date
+        run: node scripts/flatten-for-playground.mjs && git diff --exit-code anchor/playground/lib.rs
+
+  app:
+    name: App test + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npm test
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_MEDTRACE_MODE: mock

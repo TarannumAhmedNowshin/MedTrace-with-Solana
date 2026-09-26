@@ -1,0 +1,9 @@
+[package]
+name = "medtrace"
+version = "0.0.0"
+edition = "2021"
+[lib]
+path = "../../../programs/medtrace/src/lib.rs"
+[dependencies]
+anchor-lang = { path = "../anchor-lang" }
+[workspace]

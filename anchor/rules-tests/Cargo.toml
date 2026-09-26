@@ -1,0 +1,13 @@
+# Runs the program's pure domain rules as ordinary Rust unit tests.
+# Zero dependencies, so it works offline and in CI without Solana/Anchor installed:
+#   cargo test --manifest-path anchor/rules-tests/Cargo.toml
+[package]
+name = "medtrace-rules-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+path = "../programs/medtrace/src/rules.rs"
+
+[workspace]

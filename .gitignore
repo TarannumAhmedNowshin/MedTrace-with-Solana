@@ -1,26 +1,31 @@
-# secrets — never commit wallets
+node_modules
+.next
+out
+.env
+.env.local
+*.tsbuildinfo
+next-env.d.ts
+preview/dist
+preview/shots
+# anchor
+anchor/target
+anchor/test-ledger
+anchor/.anchor
+**/target
 *.keypair.json
+demo-wallets.json
+
+# secrets / os (merged)
 *-keypair.json
 id.json
 wallet*.json
-.env
 .env*.local
-
-# rust / anchor
-program/target/
-program/Cargo.lock
 .anchor/
 test-ledger/
-
-# node / next
 node_modules/
 .next/
 out/
 .vercel/
-*.tsbuildinfo
-next-env.d.ts
-
-# os / editors
 .DS_Store
 .vscode/
 .idea/

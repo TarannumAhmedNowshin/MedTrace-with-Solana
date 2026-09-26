@@ -1,0 +1,9 @@
+[package]
+name = "medtrace_playground"
+version = "0.0.0"
+edition = "2021"
+[lib]
+path = "../../../playground/lib.rs"
+[dependencies]
+anchor-lang = { path = "../anchor-lang" }
+[workspace]

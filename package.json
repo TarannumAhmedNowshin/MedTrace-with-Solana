@@ -1,0 +1,52 @@
+{
+  "name": "medtrace",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Anti-counterfeit medicine tracking on Solana: Next.js app + Anchor program in one repo",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:all": "npm run test && npm run program:rules && npm run contract",
+    "program:rules": "cargo test --manifest-path anchor/rules-tests/Cargo.toml",
+    "program:check": "cargo check --offline --manifest-path anchor/tools/offline-check/medtrace-check/Cargo.toml",
+    "program:playground": "node scripts/flatten-for-playground.mjs",
+    "anchor:build": "cd anchor && anchor build && cp target/idl/medtrace.json idl/medtrace.json",
+    "anchor:test": "cd anchor && anchor test",
+    "anchor:deploy": "cd anchor && anchor deploy --provider.cluster devnet && cp target/idl/medtrace.json idl/medtrace.json",
+    "anchor:localnet": "cd anchor && anchor localnet",
+    "contract": "node scripts/check-contract.mjs",
+    "seed": "tsx scripts/seed-demo.ts",
+    "smoke": "tsx scripts/smoke.ts",
+    "idl:placeholder": "node scripts/gen-placeholder-idl.cjs > anchor/idl/medtrace.json"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "0.31.1",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/wallet-adapter-react-ui": "^0.9.35",
+    "@solana/web3.js": "^1.98.0",
+    "@tanstack/react-query": "^5.59.0",
+    "buffer": "^6.0.3",
+    "next": "^16.0.0",
+    "qrcode.react": "^4.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "chai": "^4.4.0",
+    "mocha": "^10.4.0",
+    "ts-mocha": "^10.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}
