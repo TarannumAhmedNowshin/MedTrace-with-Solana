@@ -19,7 +19,7 @@ const BASE58_KEY = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
 export const isPublicKeyLike = (s: string | null | undefined): s is string => !!s && BASE58_KEY.test(s);
 
-const cluster = (process.env.NEXT_PUBLIC_CLUSTER ?? "devnet") as Cluster;
+const cluster = ((process.env.NEXT_PUBLIC_CLUSTER || "").trim() || "devnet") as Cluster; // empty env var → devnet
 
 const DEFAULT_RPC: Record<Cluster, string> = {
   devnet: "https://api.devnet.solana.com",
@@ -32,7 +32,7 @@ const DEFAULT_RPC: Record<Cluster, string> = {
 const programId = (process.env.NEXT_PUBLIC_PROGRAM_ID || (idl as { address?: string }).address || "").trim();
 export const programConfigured = isPublicKeyLike(programId) && programId !== SYSTEM_PROGRAM;
 
-const requested = (process.env.NEXT_PUBLIC_MEDTRACE_MODE ?? "auto").toLowerCase();
+const requested = ((process.env.NEXT_PUBLIC_MEDTRACE_MODE || "").trim() || "auto").toLowerCase();
 const mode: DataMode =
   requested === "mock" ? "mock" : requested === "solana" ? "solana" : programConfigured ? "solana" : "mock";
 
