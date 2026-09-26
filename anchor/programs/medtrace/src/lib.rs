@@ -14,7 +14,7 @@ pub mod rules;
 use rules::{Rule, Stage};
 
 // Solana Playground replaces this with your program ID on first build.
-declare_id!("11111111111111111111111111111111");
+declare_id!("GYR4Sa8NLqB5uSbZvJE3hvZ29cbK3i5tqmEWzi2tjHpo");
 
 /// PDA seed prefix for Pack accounts: seeds = [PACK_SEED, serial_bytes].
 pub const PACK_SEED: &[u8] = b"pack";

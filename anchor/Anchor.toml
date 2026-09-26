@@ -8,10 +8,10 @@ skip-lint = false
 # Run `anchor keys sync` after the first `anchor build` to write the real program ID here
 # and into declare_id! in lib.rs. (Solana Playground does this automatically.)
 [programs.localnet]
-medtrace = "11111111111111111111111111111111"
+medtrace = "GYR4Sa8NLqB5uSbZvJE3hvZ29cbK3i5tqmEWzi2tjHpo"
 
 [programs.devnet]
-medtrace = "11111111111111111111111111111111"
+medtrace = "GYR4Sa8NLqB5uSbZvJE3hvZ29cbK3i5tqmEWzi2tjHpo"
 
 [provider]
 cluster = "localnet"

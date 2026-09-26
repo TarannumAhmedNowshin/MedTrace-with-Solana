@@ -7,6 +7,7 @@
  *
  * Swapping the backend never touches a screen, only this layer.
  */
+import type { Transaction, VersionedTransaction } from "@solana/web3.js"; // type-only: erased at build
 import { config } from "./config";
 import { computeVerdict, type VerdictContext } from "./verdict";
 import { nowSec } from "./serial";
@@ -37,8 +38,8 @@ export function withVerdict(src: Omit<MedTraceReader, "getVerdict">): MedTraceRe
 /** Minimal wallet shape we need for signing (matches wallet-adapter's AnchorWallet). */
 export interface SigningWallet {
   publicKey: { toBase58(): string };
-  signTransaction<T>(tx: T): Promise<T>;
-  signAllTransactions<T>(txs: T[]): Promise<T[]>;
+  signTransaction<T extends Transaction | VersionedTransaction>(tx: T): Promise<T>;
+  signAllTransactions<T extends Transaction | VersionedTransaction>(txs: T[]): Promise<T[]>;
 }
 
 export interface Actor {
