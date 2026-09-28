@@ -1,6 +1,7 @@
 /** Server-side health probe shared by /api/health and the /status page. */
 import { config } from "./config";
 import { serverRpcUrl } from "./server";
+import { redact } from "./redact";
 
 export interface Health {
   ok: boolean;
@@ -42,7 +43,7 @@ export async function checkHealth(): Promise<Health> {
     h.rpcReachable = true;
   } catch (e) {
     h.rpcReachable = false;
-    h.problems.push(`RPC unreachable (${config.cluster}): ${String((e as Error).message ?? e).slice(0, 120)}`);
+    h.problems.push(`RPC unreachable (${config.cluster}): ${redact((e as Error).message ?? e, 120)}`);
   }
   if (h.rpcReachable && config.programId) {
     try {
@@ -50,7 +51,7 @@ export async function checkHealth(): Promise<Health> {
       h.programDeployed = !!info?.executable;
       if (!h.programDeployed) h.problems.push(`No deployed program at ${config.programId} on ${config.cluster}.`);
     } catch (e) {
-      h.problems.push(`Program lookup failed: ${String((e as Error).message ?? e).slice(0, 120)}`);
+      h.problems.push(`Program lookup failed: ${redact((e as Error).message ?? e, 120)}`);
     }
   }
   h.ok = h.problems.length === 0;

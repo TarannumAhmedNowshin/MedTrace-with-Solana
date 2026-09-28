@@ -264,9 +264,17 @@ These are real issues we hit, with their fixes.
 ## Security notes
 
 - **No patient data goes on-chain**, only pack lifecycle events. Patient scans are reads and aren't recorded.
-- **Secrets never enter the repo.** Keypairs are passed through environment variables only. `*.keypair.json`, `demo-wallets.json` and `.env*` are gitignored, and `NEXT_PUBLIC_DEMO_WALLETS` holds **public keys** only.
-- **Devnet keys used during the hackathon are throwaway.** Never reuse them on mainnet.
+- **Nothing secret lives in this repo.** The program ID, IDL and wallet addresses are public by design (they're on-chain). Keypairs are passed through environment variables only; `*.keypair.json`, `demo-wallets.json` and `.env*` are gitignored, and `NEXT_PUBLIC_DEMO_WALLETS` holds **public keys** only.
+- **The only server secret is `RPC_URL`.** It's read only on the server (`src/lib/medtrace/server.ts`) and never sent to the browser. Store it in Vercel as a **Secret**-type variable with no `NEXT_PUBLIC_` prefix.
+- **API hardening:**
+  - Error responses never expose internals. 5xx errors return a generic message, and details are logged server-side after redaction (`redact.ts` strips URLs, API keys and paths).
+  - Query parameters (`holder`, `pharmacy`, serials) are validated.
+  - The list endpoint is edge-cached for 5 seconds, so bursts can't hammer the RPC.
+  - `/api/mock/tx/*` returns 403 unless the app runs in mock mode.
+- **HTTP security headers** are set in `next.config.ts`: `X-Frame-Options`/`frame-ancestors` (no clickjacking), `nosniff`, HSTS, `Referrer-Policy` and `Permissions-Policy`. The `X-Powered-By` header is off.
+- **All writes are signed by the user's wallet** in Phantom, and the server never holds a signing key.
 - **Known gap:** any wallet can call `mint_pack` today. The fix is a regulator-approved manufacturer registry (see the roadmap).
+- **Reporting a vulnerability:** please open a private security advisory on GitHub rather than a public issue.
 
 ## Scope and limitations
 

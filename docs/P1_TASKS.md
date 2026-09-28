@@ -45,7 +45,7 @@ Stretch (only if everything above is green): manufacturer registry so only regul
   ```
 - [ ] Push the planning docs to the repo (I already ran `git init` in this folder):
   ```bash
-  cd /Users/tarannumnowshin/Downloads/hackthon && git branch -m main && git remote add origin https://github.com/TarannumAhmedNowshin/MedTrace-with-Solana.git && git add . && git commit -m "Add MedTrace planning docs and P1 task list" && git push -u origin main
+  cd <path-to-repo> && git branch -m main && git remote add origin https://github.com/TarannumAhmedNowshin/MedTrace-with-Solana.git && git add . && git commit -m "Add MedTrace planning docs and P1 task list" && git push -u origin main
   ```
   If the push is rejected because the repo already has a commit (a README made at creation), run this once then push again:
   ```bash

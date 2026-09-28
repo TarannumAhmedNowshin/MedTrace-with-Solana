@@ -1,4 +1,5 @@
-import { ok, fail } from "@/lib/medtrace/api";
+import { ok, fail, SHORT_CACHE } from "@/lib/medtrace/api";
+import { isPublicKeyLike } from "@/lib/medtrace/config";
 import { serverReader } from "@/lib/medtrace/server";
 import { AppError, STATUSES, type Status } from "@/lib/medtrace/types";
 
@@ -12,7 +13,8 @@ export async function GET(req: Request) {
     const status = q.get("status") ?? undefined;
     if (status && !STATUSES.includes(status as Status)) throw new AppError("BAD_QUERY", `Unknown status ${status}`);
     const holder = q.get("holder") ?? undefined;
-    return ok(await (await serverReader()).listPacks({ holder, status: status as Status | undefined }));
+    if (holder && !isPublicKeyLike(holder)) throw new AppError("BAD_QUERY", "holder must be a base58 public key");
+    return ok(await (await serverReader()).listPacks({ holder, status: status as Status | undefined }), 200, SHORT_CACHE);
   } catch (e) {
     return fail(e);
   }
