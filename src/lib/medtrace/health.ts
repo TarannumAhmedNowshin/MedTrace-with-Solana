@@ -1,5 +1,5 @@
 /** Server-side health probe shared by /api/health and the /status page. */
-import { config } from "./config";
+import { config, KNOWN_MANUFACTURERS } from "./config";
 import { serverRpcUrl } from "./server";
 import { redact } from "./redact";
 
@@ -30,6 +30,11 @@ export async function checkHealth(): Promise<Health> {
 
   if (config.requestedMode === "solana" && !config.programId) {
     h.problems.push("NEXT_PUBLIC_MEDTRACE_MODE=solana but no program ID: commit the deployed IDL or set NEXT_PUBLIC_PROGRAM_ID.");
+  }
+  if (KNOWN_MANUFACTURERS.length === 0) {
+    h.problems.push(
+      "No known manufacturers: packs from any wallet verify as genuine. Set NEXT_PUBLIC_KNOWN_MANUFACTURERS or the manufacturer in NEXT_PUBLIC_DEMO_WALLETS.",
+    );
   }
   if (config.mode === "mock") {
     h.ok = h.problems.length === 0;

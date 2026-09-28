@@ -6,6 +6,8 @@ export const FRESH_DISPENSE_SECONDS = 600; // 10 minutes
 export interface VerdictContext {
   /** Pharmacy wallet scanning at the counter (?pharmacy=). */
   pharmacy?: string;
+  /** Manufacturer keys allowed to mint. Injected (like nowSec) to keep this module pure. Empty/absent = no check. */
+  knownManufacturers?: readonly string[];
 }
 
 /**
@@ -20,6 +22,13 @@ export function computeVerdict(
   const base = { pack, checkedAt: nowSec, expired: !!pack && pack.expiry < nowSec };
 
   if (!pack) return { ...base, verdict: "UNKNOWN", reason: "notRegistered" };
+
+  // The program lets any wallet mint, so a registered pack is only as good as its minter.
+  // Checked before status: a counterfeit is flagged even if it was "dispensed" through fake wallets.
+  const known = ctx.knownManufacturers;
+  if (known?.length && !known.includes(pack.manufacturer)) {
+    return { ...base, verdict: "UNVERIFIED_MANUFACTURER", reason: "unverifiedManufacturer" };
+  }
 
   if (pack.status === "Dispensed") {
     const age = nowSec - (pack.dispensedAt ?? 0);

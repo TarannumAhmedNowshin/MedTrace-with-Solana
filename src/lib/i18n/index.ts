@@ -6,6 +6,7 @@ export const VERDICT_TEXT: Record<Verdict, { title: string; icon: string; tone: 
   ALREADY_DISPENSED: { title: "Code already used", icon: "✕", tone: "bad" },
   OTHER_PHARMACY: { title: "Registered to another pharmacy", icon: "!", tone: "warn" },
   UNKNOWN: { title: "Not registered", icon: "✕", tone: "bad" },
+  UNVERIFIED_MANUFACTURER: { title: "Unverified manufacturer", icon: "✕", tone: "bad" },
 };
 
 export const REASON_TEXT: Record<VerdictReason, string> = {
@@ -16,6 +17,8 @@ export const REASON_TEXT: Record<VerdictReason, string> = {
     "This code was already used. If the dispense date below matches your purchase, it's your pack. If it doesn't, this box may be a copy. Do not use it.",
   registeredElsewhere: "This pack belongs to a different pharmacy's stock.",
   notRegistered: "This code is not on the registry. This box may be fake.",
+  unverifiedManufacturer:
+    "This code was registered by a wallet that is not a verified manufacturer. This box may be fake. Do not use it.",
 };
 
 export const STATUS_TEXT: Record<Status, string> = {

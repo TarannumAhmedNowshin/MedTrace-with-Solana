@@ -10,8 +10,10 @@ import { shortAddr } from "@/lib/medtrace/serial";
 import type { VerdictResult } from "@/lib/medtrace/types";
 
 export function VerdictView({ result, serial }: { result: VerdictResult; serial: string }) {
-  // Expiry overrides a green headline: "Genuine" next to "Do not use it" is a mixed signal.
-  const v = result.expired ? { ...VERDICT_TEXT[result.verdict], title: "Expired medicine", icon: "✕", tone: "bad" as const } : VERDICT_TEXT[result.verdict];
+  // Expiry overrides a green/amber headline ("Genuine" next to "Do not use it" is a mixed signal),
+  // but never a red one: "copied code" or "unverified manufacturer" matters more than the date.
+  const base = VERDICT_TEXT[result.verdict];
+  const v = result.expired && base.tone !== "bad" ? { ...base, title: "Expired medicine", icon: "✕", tone: "bad" as const } : base;
   const reason = REASON_TEXT[result.reason];
   const pack = result.pack;
   const explorer = pack ? explorerAddress(pack.address) : null;
