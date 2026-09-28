@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { RecheckButton } from "./RecheckButton";
 import { VerdictView } from "@/components/VerdictView";
 import { VerifyShell } from "@/components/VerifyShell";
+import { isPublicKeyLike } from "@/lib/medtrace/config";
 import { serverReader } from "@/lib/medtrace/server";
 import { isValidSerial, normalizeSerial } from "@/lib/medtrace/serial";
 import { computeVerdict } from "@/lib/medtrace/verdict";
@@ -18,7 +19,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function VerifyPage({ params, searchParams }: Props) {
   const serial = normalizeSerial((await params).serial);
-  const { pharmacy } = await searchParams;
+  // Same rule as /api/packs/:serial/verdict: ignore anything that isn't one base58 key (e.g. a repeated ?pharmacy=).
+  const raw = (await searchParams).pharmacy;
+  const pharmacy = isPublicKeyLike(raw) ? raw : undefined;
 
   // Malformed codes are simply not registered; no RPC call needed.
   const result = isValidSerial(serial)

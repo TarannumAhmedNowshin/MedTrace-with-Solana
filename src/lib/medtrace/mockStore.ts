@@ -79,7 +79,7 @@ export class MockStore {
     if (!isValidSerial(serial)) throw new AppError("InvalidSerial");
     if (!/^[\x20-\x7e]{1,16}$/.test(input.batch)) throw new AppError("InvalidBatch"); // same rule as program rules.rs
     const now = nowSec();
-    if (input.expiry <= now) throw new AppError("AlreadyExpired");
+    if (!Number.isSafeInteger(input.expiry) || input.expiry <= now) throw new AppError("AlreadyExpired");
     if (this.packs.has(serial)) throw new AppError("SerialTaken");
     this.packs.set(serial, {
       serial,

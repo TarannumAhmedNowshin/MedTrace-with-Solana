@@ -39,5 +39,6 @@ describe("MockStore mirrors program rules", () => {
     expect(await code(s.mintPack(MFR, { serial: "X".repeat(33), batch: "B", expiry: nowSec() + 10 }))).toBe("InvalidSerial");
     expect(await code(s.mintPack(MFR, { serial: "SQ-1", batch: "", expiry: nowSec() + 10 }))).toBe("InvalidBatch");
     expect(await code(s.mintPack(MFR, { serial: "SQ-1", batch: "B", expiry: nowSec() - 10 }))).toBe("AlreadyExpired");
+    expect(await code(s.mintPack(MFR, { serial: "SQ-1", batch: "B", expiry: NaN }))).toBe("AlreadyExpired");
   });
 });

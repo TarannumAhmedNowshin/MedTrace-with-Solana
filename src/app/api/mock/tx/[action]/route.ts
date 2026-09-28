@@ -15,7 +15,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ action:
   try {
     if (config.mode !== "mock") throw new AppError("MOCK_DISABLED", "Mock writes are disabled", 403);
     const { action } = await params;
-    const b = (await req.json()) as { signer?: string; serial?: string; batch?: string; expiry?: number; newHolder?: string };
+    const b = (await req.json().catch(() => {
+      throw new AppError("BAD_QUERY", "Body must be JSON");
+    })) as { signer?: string; serial?: string; batch?: string; expiry?: number; newHolder?: string };
     if (!b.signer) throw new AppError("WALLET_NOT_CONNECTED");
 
     let signature: string;

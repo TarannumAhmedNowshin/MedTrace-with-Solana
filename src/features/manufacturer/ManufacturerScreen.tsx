@@ -36,8 +36,21 @@ export function ManufacturerScreen() {
   }, [suggested, touched]);
 
   const serialErr = serial && !isValidSerial(serial) ? "Use format SQ-000123 (max 32 chars)" : null;
-  const batchErr = !batch ? "Required" : batch.length > 16 ? "Max 16 characters" : null;
-  const expiryErr = new Date(expiry).getTime() <= Date.now() ? "Must be in the future" : null;
+  const batchTrim = batch.trim();
+  const batchErr = !batchTrim
+    ? "Required"
+    : batchTrim.length > 16
+      ? "Max 16 characters"
+      : !/^[\x20-\x7e]+$/.test(batchTrim)
+        ? "Use plain ASCII letters, digits and symbols"
+        : null;
+  // Same end-of-day UTC timestamp that is submitted, so "today" validates the way the program sees it.
+  const expirySec = expiry ? Math.floor(new Date(`${expiry}T23:59:59Z`).getTime() / 1000) : NaN;
+  const expiryErr = !Number.isFinite(expirySec)
+    ? "Pick a date"
+    : expirySec <= Math.floor(Date.now() / 1000)
+      ? "Must be in the future"
+      : null;
   const canSubmit = !!serial && !serialErr && !batchErr && !expiryErr && !!me;
 
   const onSubmit = (e?: FormEvent) => {

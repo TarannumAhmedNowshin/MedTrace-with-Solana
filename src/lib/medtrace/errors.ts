@@ -50,7 +50,7 @@ export function toAppError(e: unknown): AppError {
     [/already in use/i, "SerialTaken"],
     [/insufficient (funds|lamports)|no record of a prior credit/i, "INSUFFICIENT_FUNDS"],
     [/wallet not connected|WalletNotConnected/i, "WALLET_NOT_CONNECTED"],
-    [/429|too many requests|failed to fetch|network|ECONN|timeout/i, "RPC_UNAVAILABLE"],
+    [/429|too many requests|failed to fetch|network ?error|ECONN|timeout/i, "RPC_UNAVAILABLE"],
   ];
   for (const [re, code] of rules) if (re.test(msg)) return new AppError(code, msg);
 

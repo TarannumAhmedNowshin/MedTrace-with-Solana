@@ -14,7 +14,9 @@ export async function GET(req: Request) {
     if (status && !STATUSES.includes(status as Status)) throw new AppError("BAD_QUERY", `Unknown status ${status}`);
     const holder = q.get("holder") ?? undefined;
     if (holder && !isPublicKeyLike(holder)) throw new AppError("BAD_QUERY", "holder must be a base58 public key");
-    return ok(await (await serverReader()).listPacks({ holder, status: status as Status | undefined }), 200, SHORT_CACHE);
+    const packs = await (await serverReader()).listPacks({ holder, status: status as Status | undefined });
+    // Filtered lists back the role screens and are refetched right after a tx: never serve them stale.
+    return ok(packs, 200, holder || status ? undefined : SHORT_CACHE);
   } catch (e) {
     return fail(e);
   }

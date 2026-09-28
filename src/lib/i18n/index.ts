@@ -12,7 +12,8 @@ export const REASON_TEXT: Record<VerdictReason, string> = {
   dispensedJustNow: "Dispensed to you just now by a registered pharmacy.",
   readyAtPharmacy: "Registered and held by a licensed pharmacy.",
   inSupplyChain: "Registered, still moving through the supply chain.",
-  codeAlreadyUsed: "This pack was sold earlier. This box may be a copy. Do not use it.",
+  codeAlreadyUsed:
+    "This code was already used. If the dispense date below matches your purchase, it's your pack. If it doesn't, this box may be a copy. Do not use it.",
   registeredElsewhere: "This pack belongs to a different pharmacy's stock.",
   notRegistered: "This code is not on the registry. This box may be fake.",
 };

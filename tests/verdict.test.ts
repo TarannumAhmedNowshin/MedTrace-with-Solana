@@ -27,4 +27,8 @@ describe("computeVerdict", () => {
   it("8. dispensed pack ignores ?pharmacy (clone check wins)", () =>
     expect(computeVerdict(p({ status: "Dispensed", dispensedAt: NOW - 9999 }), NOW, { pharmacy: "OTHER" }).verdict).toBe("ALREADY_DISPENSED"));
   it("9. expiry flag", () => expect(computeVerdict(p({ expiry: NOW - 1 }), NOW).expired).toBe(true));
+  it("10. in transit, scanned by a pharmacy → GENUINE (not OTHER_PHARMACY)", () => {
+    const r = computeVerdict(p({ status: "InTransit", holder: "DIST" }), NOW, { pharmacy: "PHARM" });
+    expect([r.verdict, r.reason]).toEqual(["GENUINE", "inSupplyChain"]);
+  });
 });

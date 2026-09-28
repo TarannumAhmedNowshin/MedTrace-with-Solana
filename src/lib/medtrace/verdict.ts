@@ -28,7 +28,8 @@ export function computeVerdict(
       : { ...base, verdict: "ALREADY_DISPENSED", reason: "codeAlreadyUsed" };
   }
 
-  if (ctx.pharmacy && pack.holder !== ctx.pharmacy) {
+  // Only meaningful once the pack sits at a pharmacy; earlier stages aren't "another pharmacy's stock".
+  if (ctx.pharmacy && pack.status === "AtPharmacy" && pack.holder !== ctx.pharmacy) {
     return { ...base, verdict: "OTHER_PHARMACY", reason: "registeredElsewhere" };
   }
 

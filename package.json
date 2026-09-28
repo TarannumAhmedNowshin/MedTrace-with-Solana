@@ -10,7 +10,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:all": "npm run test && npm run program:rules && npm run contract",
