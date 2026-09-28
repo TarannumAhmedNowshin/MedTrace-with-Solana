@@ -6,7 +6,7 @@
 export const STATUSES = ["Manufactured", "InTransit", "AtPharmacy", "Dispensed"] as const;
 export type Status = (typeof STATUSES)[number];
 
-export type Verdict = "GENUINE" | "OTHER_PHARMACY" | "ALREADY_DISPENSED" | "UNKNOWN";
+export type Verdict = "GENUINE" | "OTHER_PHARMACY" | "ALREADY_DISPENSED" | "UNKNOWN" | "UNVERIFIED_MANUFACTURER";
 
 export type Role = "manufacturer" | "distributor" | "pharmacy" | "regulator";
 
@@ -28,7 +28,8 @@ export type VerdictReason =
   | "codeAlreadyUsed"
   | "registeredElsewhere"
   | "readyAtPharmacy"
-  | "inSupplyChain";
+  | "inSupplyChain"
+  | "unverifiedManufacturer";
 
 export interface VerdictResult {
   verdict: Verdict;

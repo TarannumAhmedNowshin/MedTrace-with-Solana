@@ -31,4 +31,22 @@ describe("computeVerdict", () => {
     const r = computeVerdict(p({ status: "InTransit", holder: "DIST" }), NOW, { pharmacy: "PHARM" });
     expect([r.verdict, r.reason]).toEqual(["GENUINE", "inSupplyChain"]);
   });
+
+  describe("manufacturer allowlist", () => {
+    const known = { knownManufacturers: ["M"] };
+    it("11. known manufacturer → unchanged verdicts", () => {
+      expect(computeVerdict(p(), NOW, known).verdict).toBe("GENUINE");
+      expect(computeVerdict(p({ status: "Dispensed", dispensedAt: NOW - 601 }), NOW, known).verdict).toBe("ALREADY_DISPENSED");
+    });
+    it("12. unknown manufacturer at pharmacy → UNVERIFIED_MANUFACTURER", () => {
+      const r = computeVerdict(p({ manufacturer: "FAKE" }), NOW, known);
+      expect([r.verdict, r.reason]).toEqual(["UNVERIFIED_MANUFACTURER", "unverifiedManufacturer"]);
+    });
+    it("13. unknown manufacturer beats a fresh dispense (fake wallets can walk the whole chain)", () =>
+      expect(computeVerdict(p({ manufacturer: "FAKE", status: "Dispensed", dispensedAt: NOW - 30 }), NOW, known).verdict).toBe(
+        "UNVERIFIED_MANUFACTURER",
+      ));
+    it("14. empty allowlist → check disabled", () =>
+      expect(computeVerdict(p({ manufacturer: "FAKE" }), NOW, { knownManufacturers: [] }).verdict).toBe("GENUINE"));
+  });
 });

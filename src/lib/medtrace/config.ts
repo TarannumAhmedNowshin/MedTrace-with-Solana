@@ -95,4 +95,23 @@ export const DEMO_WALLETS: DemoWallet[] = (
 export const walletByKey = (pk: string | null | undefined) => DEMO_WALLETS.find((w) => w.publicKey === pk) ?? null;
 export const walletsByRole = (role: Role) => DEMO_WALLETS.filter((w) => w.role === role);
 
+/**
+ * Manufacturers whose packs can be GENUINE. The program lets any wallet mint, so the verdict
+ * checks pack.manufacturer against this list. Set explicitly for real deployments:
+ * NEXT_PUBLIC_KNOWN_MANUFACTURERS=["<base58>", ...]
+ * Default: the demo manufacturer wallet(s). Empty → check disabled (see /status).
+ */
+function knownManufacturers(): string[] {
+  try {
+    const parsed = JSON.parse(process.env.NEXT_PUBLIC_KNOWN_MANUFACTURERS || "[]") as unknown;
+    const fromEnv = Array.isArray(parsed) ? parsed.filter((k): k is string => isPublicKeyLike(k)) : [];
+    if (fromEnv.length) return fromEnv;
+  } catch {
+    /* fall through to demo wallets */
+  }
+  return walletsByRole("manufacturer").map((w) => w.publicKey);
+}
+
+export const KNOWN_MANUFACTURERS: readonly string[] = knownManufacturers();
+
 export const verifyUrl = (serial: string) => `${config.appUrl}/verify/${encodeURIComponent(serial)}`;

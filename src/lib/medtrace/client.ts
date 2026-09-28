@@ -8,7 +8,7 @@
  * Swapping the backend never touches a screen, only this layer.
  */
 import type { Transaction, VersionedTransaction } from "@solana/web3.js"; // type-only: erased at build
-import { config } from "./config";
+import { config, KNOWN_MANUFACTURERS } from "./config";
 import { computeVerdict, type VerdictContext } from "./verdict";
 import { nowSec } from "./serial";
 import { AppError, type MintInput, type Pack, type PackFilter, type TxResult, type VerdictResult } from "./types";
@@ -30,7 +30,7 @@ export function withVerdict(src: Omit<MedTraceReader, "getVerdict">): MedTraceRe
   return {
     ...src,
     async getVerdict(serial, ctx) {
-      return computeVerdict(await src.getPack(serial), nowSec(), ctx);
+      return computeVerdict(await src.getPack(serial), nowSec(), { ...ctx, knownManufacturers: KNOWN_MANUFACTURERS });
     },
   };
 }
